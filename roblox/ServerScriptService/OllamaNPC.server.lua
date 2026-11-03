@@ -8,10 +8,11 @@ local PathfindingService = game:GetService("PathfindingService")
 local TextService = game:GetService("TextService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
 
 local CONFIG = {
     BRIDGE_URL = "https://YOUR-QUICK-TUNNEL.trycloudflare.com",
-    -- Used only in Studio. In the published game, create a Roblox Secret named OLLAMA_TOKEN.
+    -- Used only in Studio. In a published game, create a Roblox Secret named OLLAMA_TOKEN.
     STUDIO_TEST_TOKEN = "PASTE_THE_SAME_RANDOM_TOKEN_HERE",
     CHAT_PREFIX = "!ai ",
     WANDER_RADIUS = 35,
@@ -58,7 +59,7 @@ local function getToken()
     if ok and secret then
         return secret
     end
-    if game:GetService("RunService"):IsStudio() then
+    if RunService:IsStudio() then
         return CONFIG.STUDIO_TEST_TOKEN
     end
     warn("[OllamaNPC] Roblox Secret OLLAMA_TOKEN is not configured.")
@@ -112,7 +113,7 @@ local function moveToPosition(position: Vector3, version: number)
     end)
     if not success or path.Status ~= Enum.PathStatus.Success then
         humanoid:MoveTo(position)
-        humanoid.MoveToFinished:Wait(4)
+        humanoid.MoveToFinished:Wait()
         return
     end
 
@@ -197,7 +198,7 @@ local function askGemma(player: Player, message: string)
             Method = "POST",
             Headers = {
                 ["Content-Type"] = "application/json",
-                ["Authorization"] = "Bearer " .. token,
+                ["x-api-key"] = token,
             },
             Body = HttpService:JSONEncode(payload),
         })
@@ -260,7 +261,6 @@ for _, player in ipairs(Players:GetPlayers()) do
     connectPlayer(player)
 end
 
--- Autonomous wandering loop. Pathfinding runs on the server.
 task.spawn(function()
     while humanoid.Health > 0 do
         task.wait(1)
