@@ -98,7 +98,7 @@ local tokenBox = textBox("ApiKey", "API-ключ из OLLAMA_BRIDGE_TOKEN (не 
 tokenBox.TextEditable = true
 
 local selectedLabel = label("Выбранный скрипт: ничего не выбрано", 4, 26)
-local promptBox = textBox("Prompt", "Например: Создай систему двойного прыжка с проверкой на сервере...", 5, 100, true)
+local promptBox = textBox("Prompt", "Например: Создай систему двойного прыжка с проверкой на сервере...", 5, 70, true)
 
 local askButton = make("TextButton", {
     Name = "AskGemma",
@@ -114,11 +114,11 @@ local askButton = make("TextButton", {
 
 local statusLabel = label("Готов. Мост должен работать на этом ПК.", 7, 34)
 
-local messageBox = textBox("Explanation", "Ответ агента появится здесь.", 8, 66, true)
+local messageBox = textBox("Explanation", "Ответ агента появится здесь.", 8, 48, true)
 messageBox.TextEditable = false
 
 label("Предпросмотр Luau — проверь код перед применением:", 9, 22)
-local codeBox = textBox("CodePreview", "-- Здесь появится предложенный код", 10, 260, true)
+local codeBox = textBox("CodePreview", "-- Здесь появится предложенный код", 10, 160, true)
 codeBox.ClearTextOnFocus = false
 
 local applyButton = make("TextButton", {
