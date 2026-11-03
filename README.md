@@ -102,6 +102,34 @@ Run the Python bridge and tunnel, then press **Play** in Studio. Walk up to the 
 
 The NPC also wanders automatically around its starting position.
 
+## 7. Roblox Studio coding agent plugin
+
+The repository also includes a Studio dock-widget plugin powered by the same local Ollama bridge. Unlike the NPC, the plugin runs on your PC inside Studio, so it connects directly to `http://127.0.0.1:8000` — **no Cloudflare tunnel is needed for plugin use**.
+
+### Install
+
+1. Open `plugin/RobloxOllamaAgent.plugin.lua` from this repository.
+2. Download the raw Lua file from GitHub.
+3. In Roblox Studio, open **Plugins > Manage Plugins** and use the local plugin installation/import option available in your Studio version. If your version does not show that option, place the file in Studio's local Plugins folder and restart Studio.
+4. In **Game Settings > Security**, enable **Allow HTTP Requests** for Studio testing.
+5. Start the Python bridge as described above. Keep Ollama running.
+6. Open the **Ollama AI** toolbar and click **Ollama Agent**.
+7. Leave the bridge URL as `http://127.0.0.1:8000`, enter the same API key used by `OLLAMA_BRIDGE_TOKEN`, and select exactly one `Script`, `LocalScript`, or `ModuleScript` in Explorer.
+8. Describe the change in Russian and click **Спросить Gemma**.
+9. Review the explanation and generated Luau in the preview. Click **Применить к выбранному скрипту** only when you are satisfied.
+
+### What it does
+
+- Sends the selected script's type, name, source and your request to Gemma 4:12B.
+- Generates a complete replacement source file, not a partial patch.
+- Lets you inspect the proposed code before changing anything.
+- Applies code only after you press the Apply button. Studio's undo can revert the edit.
+- Keeps the API key in the plugin window for the current Studio session; it is not written into the plugin source or repository.
+
+**Important:** The API key is visible as plain text in the plugin field and is sent only to your local bridge. Do not stream or share the Studio window while the key is entered. Do not put a real key in a game script or commit it to GitHub. The plugin does not execute model-generated code automatically; test changes in a private place and inspect them first.
+
+The agent edits only the one selected script. It does not yet create whole game systems across multiple files, run playtests, or automatically repair Output errors.
+
 ## Troubleshooting
 
 - **NPC does not move:** check that the rig has a living Humanoid, an unanchored root part, and a clear walkable floor. Check Output for pathfinding errors.
