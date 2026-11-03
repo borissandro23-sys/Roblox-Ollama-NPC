@@ -46,7 +46,6 @@ class Handler(BaseHTTPRequestHandler):
     server_version = "RobloxOllamaBridge/1.0"
 
     def log_message(self, fmt: str, *args) -> None:
-        # Do not log request headers or tokens.
         print("%s - %s" % (self.client_address[0], fmt % args))
 
     def do_GET(self) -> None:
@@ -63,8 +62,8 @@ class Handler(BaseHTTPRequestHandler):
             send_json(self, 503, {"error": "server_token_not_configured"})
             return
 
-        auth = self.headers.get("Authorization", "")
-        if auth != f"Bearer {TOKEN}":
+        supplied_token = self.headers.get("X-API-Key", "")
+        if supplied_token != TOKEN:
             send_json(self, 401, {"error": "unauthorized"})
             return
 
@@ -96,10 +95,12 @@ class Handler(BaseHTTPRequestHandler):
             return
         last_request[player] = now
 
+        nearby_data = body.get("nearby", [])
+        nearby = nearby_data[:12] if isinstance(nearby_data, list) else []
         context = {
             "player": player,
             "message": message,
-            "nearby": body.get("nearby", [])[:12] if isinstance(body.get("nearby", []), list) else [],
+            "nearby": nearby,
             "npc_state": str(body.get("npc_state", "idle"))[:40],
         }
         prompt = (
